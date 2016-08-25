@@ -574,6 +574,7 @@ function brunch()
 function breakfast()
 {
     target=$1
+    local variant=$2
     CUSTOM_DEVICES_ONLY="true"
     unset LUNCH_MENU_CHOICES
     for f in `/bin/ls vendor/twisted/vendorsetup.sh 2> /dev/null`
@@ -593,7 +594,10 @@ function breakfast()
             lunch $target
         else
             # This is probably just the nexus model name
-            lunch twisted_$target-userdebug
+            if [ -z "$variant" ]; then
+                variant="userdebug"
+            fi
+            lunch twisted_$target-$variant
         fi
     fi
     return $?
