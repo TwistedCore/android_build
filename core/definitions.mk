@@ -2415,7 +2415,6 @@ endef
 
 #TODO: update the manifest to point to the dex file
 define add-dex-to-package
-<<<<<<< HEAD
 $(call add-dex-to-package-arg,$@)
 endef
 
