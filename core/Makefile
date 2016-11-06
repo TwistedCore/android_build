@@ -1048,8 +1048,6 @@ systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
 ifeq ($(NO_SQUISHER),)
 .PHONY: systemimage-squisher
 FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS) systemimage-squisher
-else
-FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS)
 endif
 
 # -----------------------------------------------------------------
