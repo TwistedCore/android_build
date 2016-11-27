@@ -184,8 +184,8 @@ ifneq ($(strip $(TARGET_BUILD_APPS)),)
 all_product_configs := $(call get-product-makefiles,\
     $(SRC_TARGET_DIR)/product/AndroidProducts.mk)
 else
-  ifneq ($(CUSTOM_BUILD),)
-    all_product_configs := $(shell ls vendor/twisted/products/twisted_$(CUSTOM_BUILD).mk)
+  ifneq ($(TWISTED_BUILD),)
+    all_product_configs := $(shell ls vendor/twisted/products/twisted_$(TWISTED_BUILD).mk)
   else
     # Read in all of the product definitions specified by the AndroidProducts.mk
     # files in the tree.

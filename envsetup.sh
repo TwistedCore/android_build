@@ -133,11 +133,11 @@ function check_product()
     fi
 
     if (echo -n $1 | grep -q -e "^twisted_") ; then
-       CUSTOM_BUILD=$(echo -n $1 | sed -e 's/^twisted_//g')
+       TWISTED_BUILD=$(echo -n $1 | sed -e 's/^twisted_//g')
     else
-       CUSTOM_BUILD=
+       TWISTED_BUILD=
     fi
-    export CUSTOM_BUILD
+    export TWISTED_BUILD
 
         TARGET_PRODUCT=$1 \
         TARGET_BUILD_VARIANT= \

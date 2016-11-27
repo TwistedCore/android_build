@@ -18,57 +18,44 @@
 Given a target-files zipfile, produces an OTA package that installs
 that build.  An incremental OTA is produced if -i is given, otherwise
 a full OTA is produced.
-
 Usage:  ota_from_target_files [flags] input_target_files output_ota_package
-
   --board_config  <file>
       Deprecated.
-
   -k (--package_key) <key> Key to use to sign the package (default is
       the value of default_system_dev_certificate from the input
       target-files's META/misc_info.txt, or
       "build/target/product/security/testkey" if that value is not
       specified).
-
       For incremental OTAs, the default value is based on the source
       target-file, not the target build.
-
   -i  (--incremental_from)  <file>
       Generate an incremental OTA using the given target-files zip as
       the starting build.
-
   --full_radio
       When generating an incremental OTA, always include a full copy of
       radio image. This option is only meaningful when -i is specified,
       because a full radio is always included in a full OTA if applicable.
-
   --full_bootloader
       Similar to --full_radio. When generating an incremental OTA, always
       include a full copy of bootloader image.
-
   -v  (--verify)
       Remount and verify the checksums of the files written to the
       system and vendor (if used) partitions.  Incremental builds only.
-
   -o  (--oem_settings)  <file>
       Use the file to specify the expected OEM-specific properties
       on the OEM partition of the intended device.
-
   --oem_no_mount
       For devices with OEM-specific properties but without an OEM partition,
       do not mount the OEM partition in the updater-script. This should be
       very rarely used, since it's expected to have a dedicated OEM partition
       for OEM-specific properties. Only meaningful when -o is specified.
-
   -w  (--wipe_user_data)
       Generate an OTA package that will wipe the user data partition
       when installed.
-
   -n  (--no_prereq)
       Omit the timestamp prereq check normally included at the top of
       the build scripts (used for developer OTA packages which
       legitimately need to go back and forth).
-
   --downgrade
       Intentionally generate an incremental OTA that updates from a newer
       build to an older one (based on timestamp comparison). "post-timestamp"
@@ -76,43 +63,33 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
       wipe will always be enforced, so "ota-wipe=yes" will also be included in
       the metadata file. The update-binary in the source build will be used in
       the OTA package, unless --binary flag is specified.
-
   -e  (--extra_script)  <file>
       Insert the contents of file at the end of the update script.
-
   -a  (--aslr_mode)  <on|off>
       Specify whether to turn on ASLR for the package (on by default).
-
   -2  (--two_step)
       Generate a 'two-step' OTA package, where recovery is updated
       first, so that any changes made to the system partition are done
       using the new recovery (new kernel, etc.).
-
   --block
       Generate a block-based OTA if possible.  Will fall back to a
       file-based OTA if the target_files is older and doesn't support
       block-based OTAs.
-
   -b  (--binary)  <file>
       Use the given binary as the update-binary in the output package,
       instead of the binary in the build's target_files.  Use for
       development only.
-
   -t  (--worker_threads) <int>
       Specifies the number of worker-threads that will be used when
       generating patches for incremental updates (defaults to 3).
-
   --backup <boolean>
       Enable or disable the execution of backuptool.sh.
       Disabled by default.
-
   --stash_threshold <float>
       Specifies the threshold that will be used to compute the maximum
       allowed stash size (defaults to 0.8).
-
   --gen_verify
       Generate an OTA package that verifies the partitions.
-
   --log_diff <file>
       Generate a log file that shows the differences in the source and target
       builds for an incremental package. This option is only meaningful when
@@ -305,7 +282,6 @@ class Item(object):
     all children and determine the best strategy for using set_perm_recursive
     and set_perm to correctly chown/chmod all the files to their desired
     values.  Recursively calls itself for all descendants.
-
     Returns a dict of {(uid, gid, dmode, fmode, selabel, capabilities): count}
     counting up all descendants of this node.  (dmode or fmode may be None.)
     Also sets the best_subtree of each directory Item to the (uid, gid, dmode,
@@ -576,10 +552,10 @@ def WriteFullOTAPackage(input_zip, output_zip):
 
   metadata["ota-type"] = "BLOCK" if block_based else "FILE"
 
-  if not OPTIONS.omit_prereq:
-    ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
-    ts_text = GetBuildProp("ro.build.date", OPTIONS.info_dict)
-    script.AssertOlderBuild(ts, ts_text)
+  #if not OPTIONS.omit_prereq:
+  #  ts = GetBuildProp("ro.build.date.utc", OPTIONS.info_dict)
+  #  ts_text = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+  #  script.AssertOlderBuild(ts, ts_text)
 
   AppendAssertions(script, OPTIONS.info_dict, oem_dict)
   device_specific.FullOTA_Assertions()
@@ -627,6 +603,14 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   # Dump fingerprints
   #script.Print("Target: %s" % CalculateFingerprint(
   #    oem_props, oem_dict, OPTIONS.info_dict))
+
+  build = GetBuildProp("ro.build.id", OPTIONS.info_dict)
+  date = GetBuildProp("ro.build.date", OPTIONS.info_dict)
+  model = GetBuildProp("ro.product.model", OPTIONS.info_dict)
+
+  script.Print("      Device       : %s"%(model)                )
+  script.Print("      Build number : %s"%(build)                )
+  script.Print("      Build date   : %s"%(date)                 )
 
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
