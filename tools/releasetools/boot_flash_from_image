@@ -47,11 +47,11 @@ if path.exists(defconfig):
     prekernel_version = search('CONFIG_LOCALVERSION=.*\n', open(defconfig, 'r').read())
     if prekernel_version:
         kernel_version = sub(r'(CONFIG_LOCALVERSION=)|\"|\n|-', "", prekernel_version.group(0))
-        kernel_version = "%s-%s-kernel" % (kernel_version or "flash", device)
+        kernel_version = "%s-%s-kernel" % (kernel_version or "twisted", device)
     else:
-        kernel_version = "flash-%s-kernel" % device
+        kernel_version = "twisted-%s-kernel" % device
 else:
-    kernel_version = "flash-%s-kernel" % device
+    kernel_version = "twisted-%s-kernel" % device
 
 updater = "%s/obj/EXECUTABLES/updater_intermediates/updater" % out
 
@@ -83,7 +83,7 @@ copy2(updater, "%s/update-binary" % updater_dir)
 updater_script = "%s/updater-script" % updater_dir
 
 # create the contents
-contents = "ui_print(\"Flash Kernel\");\n"
+contents = "ui_print(\"twisted Kernel\");\n"
 if boot_partition_type == "mtd":
     contents += "package_extract_file(\"boot.img\", \"/tmp/boot.img\");\n"
     contents += "write_raw_image(\"/tmp/boot.img\", \"%s\");\n" % boot_partition
